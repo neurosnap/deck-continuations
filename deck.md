@@ -166,6 +166,8 @@ But what if I told you there was a better way to express `async` flow control?
 Would you believe me?
 
 Pause for effect. Count to 5.
+
+But first, a detour.
 -->
 
 ---
@@ -195,9 +197,8 @@ Functions behave differently depending on their **color**.
 
 ---
 
-`function() {}` -> `blue`
-
-`async function() {}` -> `red`
+- `function() {}` -> `blue`
+- `async function() {}` -> `red`
 
 There's no problem with `blue` functions calling other `blue` functions: you'll
 get a return value synchronously.
