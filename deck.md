@@ -232,7 +232,7 @@ console.log(result); // 68
 ```
 
 <!--
-### Key points
+### key points
 
 - It doesn't matter if it's sync or async, delimited continuations can handle
   that flow control
@@ -249,7 +249,7 @@ console.log(result); // 68
 
 ---
 
-### Key points
+### key points
 
 - It doesn't matter if it's sync or async, delimited continuations can handle
   that flow control
