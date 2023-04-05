@@ -19,7 +19,22 @@ const sync = (value: number) =>
     return k(value);
   };
 
-const ev = evaluate(function* () {
+function* async<T>(): Computation<{
+  resolve: (r: T) => void;
+  reject: (e: Error) => void;
+}> {
+  return yield* shift(function* (k) {
+    const promise = new Promise((resolve, reject) => {
+      k({ resolve, reject });
+    });
+
+    return promise;
+  });
+}
+
+const ev = evaluate<Promise<number>>(function* () {
+  const { resolve } = yield* async();
+
   const first = yield* add(sync(13), function* (k) {
     return Promise.resolve(55).then(k);
   });
@@ -34,8 +49,8 @@ const ev = evaluate(function* () {
   );
 
   const result = yield* add(sync(first), sync(second));
-  console.log(result);
-  return result;
+  resolve(result);
 });
 
-console.log(ev);
+const result = await ev;
+console.log(result);
