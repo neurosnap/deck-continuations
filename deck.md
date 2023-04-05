@@ -862,9 +862,9 @@ well as react-query and more.
 Using `starfx`[^9] we could do something like this:
 
 ```ts
-import { request, json, call, parallel, forEach } from 'starfx';
+import { request, json, parallel, forEach } from 'starfx';
 
-function* showChapters(chapterURLs) {
+function* showChapters(chapterURLs: string[]) {
   const reqs = chapterURLs.map(function (url) {
     return function* () {
       const response = yield* request(url);
@@ -874,12 +874,11 @@ function* showChapters(chapterURLs) {
 
   const chapters = yield* parallel(reqs);
 
-  yield* forEach(chapters.sequence, function* () {
-    const result = yield* chapter;
-    if (result.ok) {
-      appendChapter(result.error);
+  yield* forEach(chapters.sequence, function* (chapter) {
+    if (chapter.ok) {
+      appendChapter(chapter.value);
     } else {
-      console.error(result.error);
+      console.error(chapter.error);
     }
   });
 }
