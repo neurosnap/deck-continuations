@@ -34,6 +34,7 @@ const ev = evaluate(function* () {
   );
 
   const result = yield* add(sync(first), sync(second));
+  console.log(result);
   return result;
 });
 

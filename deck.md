@@ -598,34 +598,47 @@ Back to delimited continuations.  Except this time, we are going to mix some
 ## Composition example
 
 ```ts
-function* add(lhs, rhs) {
-  let left = yield* shift(lhs);
-  let right = yield* shift(rhs);
+import { shift, evaluate, Computation, Continuation } from "./deps.ts";
+
+type ShiftProp<T = unknown> = (
+  res: Continuation<T>,
+  rej?: Continuation<Error>
+) => Computation;
+
+function* add(
+  lhs: ShiftProp<number>,
+  rhs: ShiftProp<number>
+): Computation<number> {
+  const left = yield* shift(lhs);
+  const right = yield* shift(rhs);
   return left + right;
 }
 
-const sync = function* (k) {
-  k(value);
-};
+const sync = (value: number) =>
+  function* (k: Continuation<number>) {
+    return k(value);
+  };
 
-evaluate(function* () {
-  let first = yield* add(sync(13), function* (k) {
-    Promise.resolve(55).then(k);
+const ev = evaluate(function* () {
+  const first = yield* add(sync(13), function* (k) {
+    return Promise.resolve(55).then(k);
   });
 
-  let second = yield* add(
+  const second = yield* add(
     function* (k) {
       setTimeout(() => k(21), 1000);
     },
     function* (k) {
       k(Math.random());
-    },
+    }
   );
 
-  let result = yield* add(sync(first), sync(second));
-
+  const result = yield* add(sync(first), sync(second));
+  console.log(result);
   return result;
 });
+
+console.log(ev);
 ```
 
 <!--
